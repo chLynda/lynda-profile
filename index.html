@@ -334,6 +334,113 @@ h1 span{
   line-height:1.55;
   padding:18px 12px 0;
 }
+
+/* CV LANGUAGE MODAL */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background:rgba(3,6,14,.72);
+  backdrop-filter:blur(14px);
+}
+.modal-overlay.open{display:flex}
+.cv-modal{
+  width:min(100%,390px);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(143,214,200,.18), transparent 30%),
+    linear-gradient(180deg,rgba(22,28,44,.98),rgba(10,14,25,.98));
+  box-shadow:0 28px 90px rgba(0,0,0,.55);
+  padding:22px;
+  color:var(--text);
+}
+.modal-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:18px;
+}
+.modal-kicker{
+  color:var(--accent);
+  text-transform:uppercase;
+  letter-spacing:2.2px;
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+.cv-modal h3{
+  font-family:var(--serif);
+  font-size:26px;
+  line-height:1.05;
+  letter-spacing:-.5px;
+}
+.close-modal{
+  width:34px;
+  height:34px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:rgba(255,255,255,.07);
+  color:var(--text);
+  cursor:pointer;
+  font-size:20px;
+  line-height:1;
+}
+.cv-modal p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.65;
+  margin-bottom:16px;
+}
+.cv-options{
+  display:grid;
+  gap:10px;
+}
+.cv-option{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(255,255,255,.075);
+  padding:15px;
+  transition:transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.cv-option:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.11);
+  border-color:rgba(255,255,255,.25);
+}
+.cv-option strong{
+  display:block;
+  font-size:14px;
+  margin-bottom:4px;
+}
+.cv-option span{
+  display:block;
+  color:var(--muted);
+  font-size:11.5px;
+}
+.cv-option .download-arrow{
+  color:var(--accent);
+  font-weight:900;
+  font-size:18px;
+}
+.modal-note{
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+  font-size:11px !important;
+  color:rgba(247,247,244,.48) !important;
+  margin-bottom:0 !important;
+}
+
 @media (max-width:390px){
   h1{font-size:46px}
   .actions,.contact-buttons{grid-template-columns:1fr}
@@ -363,7 +470,7 @@ h1 span{
 
         <div class="actions">
           <!-- Replace CV_Lynda_CHETTI.pdf with your hosted CV link -->
-          <a class="btn primary" href="CV_Lynda_CHETTI.pdf" target="_blank" rel="noopener">Download CV</a>
+          <button class="btn primary" type="button" onclick="openCVModal()">Download CV</button>
           <!-- Replace this LinkedIn link with your real URL -->
           <a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
           <a class="btn" href="#projects">Projects</a>
@@ -547,9 +654,59 @@ h1 span{
       </footer>
 
     </div>
+
+    <div class="modal-overlay" id="cvModal" onclick="closeCVModal(event)">
+      <div class="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cvModalTitle" onclick="event.stopPropagation()">
+        <div class="modal-top">
+          <div>
+            <div class="modal-kicker">Choose your version</div>
+            <h3 id="cvModalTitle">Download CV</h3>
+          </div>
+          <button class="close-modal" type="button" aria-label="Close" onclick="closeCVModal()">×</button>
+        </div>
+
+        <p>
+          Select the CV version that best matches your recruitment context.
+        </p>
+
+        <div class="cv-options">
+          <a class="cv-option" href="CV_Lynda_CHETTI_EN.pdf" download>
+            <div>
+              <strong>English CV</strong>
+              <span>International version · Data Analytics & Engineering</span>
+            </div>
+            <div class="download-arrow">↓</div>
+          </a>
+
+          <a class="cv-option" href="CV_Lynda_CHETTI_FR.pdf" download>
+            <div>
+              <strong>CV en français</strong>
+              <span>Version française · Analyse & ingénierie des données</span>
+            </div>
+            <div class="download-arrow">↓</div>
+          </a>
+        </div>
+
+        <p class="modal-note">
+          Tip: keep both PDF files in the same folder as this page, using the exact filenames above.
+        </p>
+      </div>
+    </div>
+
   </main>
 
 <script>
+
+function openCVModal(){
+  document.getElementById('cvModal').classList.add('open');
+}
+function closeCVModal(event){
+  if(event && event.target && event.target.id !== 'cvModal') return;
+  document.getElementById('cvModal').classList.remove('open');
+}
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') document.getElementById('cvModal').classList.remove('open');
+});
 document.querySelectorAll('.project').forEach(card => {
   card.addEventListener('keypress', e => {
     if(e.key === 'Enter' || e.key === ' ') card.classList.toggle('open');
